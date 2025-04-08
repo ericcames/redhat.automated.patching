@@ -1,4 +1,9 @@
 ---
+- name: Print
+  delegate_to: rheldemo
+  ansible.builtin.debug:
+    var: inventory_hostname
+
 - name: Print out server_name get_insights_inventory_id
   ansible.builtin.debug:
     var: server_name
