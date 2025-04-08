@@ -3,12 +3,13 @@
   delegate_to: 127.0.0.1
   register: clone_result
   run_once: true
-  when: software_repository is defined
+  when: cleanup_github_repo_software_repository is defined
   ansible.builtin.git:
     repo: "{{ cleanup_github_repo_software_repository }}"
     dest: "{{ cleanup_github_repo_local_repo }}"
     accept_hostkey: true
     force: true
+    version: main
 
 - name: Remove all playbooks that match CTASK*.yml
   delegate_to: localhost
@@ -44,7 +45,7 @@
 - name: Push the changes
   delegate_to: localhost
   run_once: true
-  when: software_repository is defined
+  when: cleanup_github_repo_software_repository is defined
   args:
     chdir: "{{ cleanup_github_repo_local_repo }}"
   ansible.builtin.shell: git push
