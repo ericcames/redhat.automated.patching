@@ -39,7 +39,7 @@
     GIT_AUTHOR_NAME: "{{ cleanup_github_repo_git_name | default(omit) }}"
     GIT_AUTHOR_EMAIL: "{{ cleanup_github_repo_git_email | default(omit) }}"
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ cleanup_github_repo_local_repo }}"
   ansible.builtin.shell: git commit -am 'Changed'
 
 - name: Push the changes
