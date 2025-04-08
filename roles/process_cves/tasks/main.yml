@@ -43,7 +43,7 @@
   loop: "{{ my_cve_list['json']['data'] }}"
   when: item.attributes.remediation == 2
   servicenow.itsm.change_request_task:
-    configuration_item: "{{ my_server }}"
+    configuration_item: "{{ server_name }}"
     change_request_number: "{{ ticket_number }}"
     type: implementation
     state: open
@@ -78,7 +78,7 @@
     impact: medium
     urgency: low
     other:
-      cmdb_ci: "{{ my_server }}"
+      cmdb_ci: "{{ server_name }}"
 
 - name: Create a Problem tickets list
   loop: "{{ problem_numbers_are_here['results'] }}"
@@ -147,12 +147,12 @@
     content: "{{ item.content }}"
     mode: '0644'
 
-- name: Update playbooks to use the public facing dns name
-  loop: "{{ my_playbooks['results'] }}"
-  ansible.builtin.replace:
-    path: "{{ process_cves_local_repo }}/{{ item.item.number }}.yml"
-    regexp: "{{ my_private_dns_name }}"
-    replace: "{{ my_server }}"
+# - name: Update playbooks to use the public facing dns name
+#   loop: "{{ my_playbooks['results'] }}"
+#   ansible.builtin.replace:
+#     path: "{{ process_cves_local_repo }}/{{ item.item.number }}.yml"
+#     regexp: "{{ my_private_dns_name }}"
+#     replace: "{{ server_name }}"
 
 - name: Add any new playbooks to the software_repository
   delegate_to: localhost

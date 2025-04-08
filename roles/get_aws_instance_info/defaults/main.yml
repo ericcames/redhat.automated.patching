@@ -1,4 +1,0 @@
----
-get_aws_instance_info_region: us-west-1
-get_aws_instance_info_servername: Linux Daily Demo
-get_aws_instance_info_my_email_address: eric.ames@redhat.com
