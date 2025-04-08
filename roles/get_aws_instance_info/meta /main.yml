@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  role_name: get_aws_instance_info
+  author: Eric Ames (ericcames)
+  description: Gather up the Amazon instance information that we need.
+  license: MIT License
+  min_ansible_version: "2.12"

@@ -1,4 +1,4 @@
 ---
-region: us-west-1
-servername: Linux Demo Server
-my_email_address: eames@redhat.com
+get_aws_instance_info_region: us-west-1
+get_aws_instance_info_servername: Linux Demo Server
+get_aws_instance_info_my_email_address: eames@redhat.com

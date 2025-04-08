@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  role_name: get_insights_inventory_id
+  author: Eric Ames (ericcames)
+  description: Get the Red Hat Insights Inventory ID for my server
+  license: MIT License
+  min_ansible_version: "2.12"

@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  role_name: cleanup_github_repo
+  author: Eric Ames (ericcames)
+  description: Clean up the github repo
+  license: MIT License
+  min_ansible_version: "2.12"

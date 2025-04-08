@@ -12,9 +12,9 @@ Amazon Web Services Credential in Ansible Automation Platform
 Role Variables
 --------------
 ```yaml
-region: us-west-1
-servername: Linux Web Server
-my_email_address: eames@redhat.com
+get_aws_instance_info_region: us-west-1
+get_aws_instance_info_servername: Linux Demo Server
+get_aws_instance_info_my_email_address: eames@redhat.com
 ```
 Dependencies
 ------------
@@ -36,7 +36,7 @@ Example Playbook
 License
 -------
 
-https://spdx.org/licenses/GPL-3.0-only.html
+https://spdx.org/licenses/MIT.html
 
 Author Information
 ------------------

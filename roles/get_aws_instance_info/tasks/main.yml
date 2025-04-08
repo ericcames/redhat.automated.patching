@@ -1,12 +1,12 @@
 ---
-- name: Get instances id with tag {{ servername }} in {{ region }}
+- name: Get instances id
   register: instance_info
   amazon.aws.ec2_instance_info:
-    region: "{{ region }}"
+    region: "{{ get_aws_instance_info_region }}"
     filters:
-      tag:Name: "{{ servername }}"
+      tag:Name: "{{ get_aws_instance_info_servername }}"
       instance-state-name: [running]
-      tag:Contact: "{{ my_email_address }}"
+      tag:Contact: "{{ get_aws_instance_info_my_email_address }}"
 
 - name: Printing out instance_info.instances[0].instance_id
   when: instance_info.instances[0].instance_id is defined

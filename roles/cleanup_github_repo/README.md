@@ -11,11 +11,11 @@ Access to the github repo
 Role Variables
 --------------
 ```yaml
-software_repository: https://{{personal_access_token}}@github.com/ericcames/RedHatInsightsPlaybooks.git
-local_repo: /var/tmp/github/RedHatInsightsPlaybooks
-git_name: ericcames
-git_email: ericcames@msn.com
-personal_access_token: git_hub_token
+github_repo_software_repository: https://{{ cleanup_github_repo_personal_access_token }}@github.com/ericcames/RedHatInsightsPlaybooks.git
+cleanup_github_repo_local_repo: /var/tmp/github/RedHatInsightsPlaybooks
+cleanup_github_repo_git_name: ericcames
+cleanup_github_repo_git_email: ericcames@msn.com
+cleanup_github_repo_personal_access_token: git_hub_token
 ```
 Dependencies
 ------------
@@ -35,7 +35,7 @@ Example Playbook
 License
 -------
 
-https://spdx.org/licenses/GPL-3.0-only.html
+https://spdx.org/licenses/MIT.html
 
 Author Information
 ------------------

@@ -8,8 +8,8 @@
   ansible.builtin.uri:
     url: https://console.redhat.com/api/inventory/v1/hosts?display_name={{ my_private_dns_name }}
     method: GET
-    user: "{{ insights_username }}"
-    password: "{{ insights_password }}"
+    user: "{{ scm_username }}"
+    password: "{{ scm_password }}"
     validate_certs: false
     force_basic_auth: true
     status_code: 200
