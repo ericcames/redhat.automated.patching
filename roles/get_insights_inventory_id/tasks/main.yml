@@ -23,8 +23,8 @@
 
 - name: Print out my_insights_ids
   ansible.builtin.debug:
-    msg: "{{ my_host_list.json.results[0].insights_id }}"
+    msg: "{{ my_host_list.json.results[0].id }}"
 
 - name: Capture Red Hat Insights inventory id
   ansible.builtin.set_fact:
-    my_insights_inventory_id: "{{ my_host_list.json.results[0].insights_id }}"
+    my_insights_inventory_id: "{{ my_host_list.json.results[0].id }}"
