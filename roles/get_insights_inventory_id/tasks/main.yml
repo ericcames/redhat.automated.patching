@@ -1,4 +1,8 @@
 ---
+- name: Print out server_name get_insights_inventory_id
+  ansible.builtin.debug:
+    var: server_name
+
 - name: Get my list
   register: my_host_list
   ignore_errors: true
