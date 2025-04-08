@@ -59,7 +59,7 @@
 
 - name: Create a Change Task tickets list
   loop: "{{ task_numbers_are_here['results'] }}"
-  when: item.changed != false
+  when: item.changed = false
   ansible.builtin.set_fact:
     chg_tkt_list: "{{ chg_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'task_sys_id': item.record.sys_id, 'change_request_sys_id': item.record.change_request, 'cmdb_ci': item.record.cmdb_ci, 'insights_id': my_insights_inventory_id, 'cve_id': item.record.user_input}] }}"
 
@@ -82,7 +82,7 @@
 
 - name: Create a Problem tickets list
   loop: "{{ problem_numbers_are_here['results'] }}"
-  when: item.changed != false
+  when: item.changed = false
   ansible.builtin.set_fact:
     pbm_tkt_list: "{{ pbm_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'sys_id': item.record.sys_id, 'cmdb_ci': item.record.user_input}] }}"
 
