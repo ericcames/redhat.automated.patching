@@ -6,7 +6,7 @@
   retries: 40
   delay: 10
   ansible.builtin.uri:
-    url: https://console.redhat.com/api/inventory/v1/hosts?display_name={{ my_private_dns_name }}
+    url: https://console.redhat.com/api/inventory/v1/hosts?display_name={{ server_name }}
     method: GET
     user: "{{ scm_username }}"
     password: "{{ scm_password }}"

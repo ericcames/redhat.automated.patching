@@ -11,4 +11,4 @@
     resource: change_request
     sys_id: "{{ chg_sys_id.record[0].sys_id }}"
     data:
-      work_notes: "Red Hat Insights Inventory ID: {{ my_insights_inventory_id }} for {{ my_private_dns_name }}"
+      work_notes: "Red Hat Insights Inventory ID: {{ my_insights_inventory_id }} for {{ server_name }}"
