@@ -1,13 +1,8 @@
 ---
-software_repository: https://{{personal_access_token}}@github.com/ericcames/RedHatInsightsPlaybooks.git
-local_repo: /var/tmp/github/RedHatInsightsPlaybooks
-git_name: ericcames
-git_email: ericcames@msn.com
-job_template_id: 165
-controller_url: aap.example.com
-project_id: 164
-controller_password: controller_password
-controller_username: controller_username
-personal_access_token: git_hub_token
-insights_password: 123456
-insights_username: mickey
+process_cves_software_repository: https://{{ process_cves_personal_access_token }}@github.com/ericcames/RedHatInsightsPlaybooks.git
+process_cves_personal_access_token: git_hub_token
+process_cves_local_repo: /var/tmp/github/RedHatInsightsPlaybooks
+process_cves_git_name: ericcames
+process_cves_git_email: ericcames@msn.com
+process_cves_job_template_id: 222
+process_cves_project_id: 221

@@ -1,0 +1,8 @@
+---
+galaxy_info:
+  role_name: process_cves
+  author: Eric Ames (ericcames)
+  description: For each cve with a playbook apply the fix.
+               For each cves with no playbook create a problem record.
+  license: MIT License
+  min_ansible_version: "2.12"

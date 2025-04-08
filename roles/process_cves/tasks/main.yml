@@ -1,4 +1,25 @@
 ---
+# fail with good error for Automation controller user
+- name: Determine that both AAP and Machine credentials are set
+  ansible.builtin.assert:
+    that:
+      - "lookup('ansible.builtin.env', 'CONTROLLER_USERNAME') !=''"
+      - "lookup('ansible.builtin.env', 'CONTROLLER_HOST') !=''"
+      - "lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') !=''"
+    fail_msg:
+      - "Red Hat Ansible Automation Platform credential is not set"
+      - "Please assign correct credentials to the Job Template"
+
+- name: Create a new token using username/password
+  ansible.controller.token:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_username: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME') }}"
+    controller_password: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') }}"
+    validate_certs: false
+    description: Automated Patching
+    scope: write
+    state: present
+
 - name: Get my list of CVEs
   register: my_cve_list
   until: my_cve_list.status == 200
@@ -8,8 +29,8 @@
   ansible.builtin.uri:
     url: https://console.redhat.com/api/vulnerability/v1/systems/{{ my_insights_inventory_id }}/cves?limit=30
     method: GET
-    user: "{{ insights_username }}"
-    password: "{{ insights_password }}"
+    user: "{{ scm_username }}"
+    password: "{{ scm_password }}"
     validate_certs: false
     force_basic_auth: true
     status_code: 200
@@ -38,13 +59,11 @@
 
 - name: Create a Change Task tickets list
   loop: "{{ task_numbers_are_here['results'] }}"
-  when: item.changed != false
+  when: not item.changed
   ansible.builtin.set_fact:
-    chg_tkt_list: "{{chg_tkt_list|default([]) + [{ 'number' : item.record.number, 'short_description' : item.record.short_description, 'task_sys_id' : item.record.sys_id,
-      'change_request_sys_id' : item.record.change_request, 'cmdb_ci' : item.record.cmdb_ci, 'insights_id' : my_insights_inventory_id, 'cve_id' : item.record.user_input
-      }] }}"
+    chg_tkt_list: "{{ chg_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'task_sys_id': item.record.sys_id, 'change_request_sys_id': item.record.change_request, 'cmdb_ci': item.record.cmdb_ci, 'insights_id': my_insights_inventory_id, 'cve_id': item.record.user_input}] }}"
 
-- name: print out Change Task Tickets list
+- name: Print out Change Task Tickets list
   ansible.builtin.debug:
     msg: "{{ chg_tkt_list }}"
 
@@ -63,10 +82,9 @@
 
 - name: Create a Problem tickets list
   loop: "{{ problem_numbers_are_here['results'] }}"
-  when: item.changed != false
+  when: not item.changed
   ansible.builtin.set_fact:
-    pbm_tkt_list: "{{pbm_tkt_list|default([]) + [{ 'number' : item.record.number, 'short_description' : item.record.short_description, 'sys_id' : item.record.sys_id,
-      'cmdb_ci' : item.record.user_input }] }}"
+    pbm_tkt_list: "{{ pbm_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'sys_id': item.record.sys_id, 'cmdb_ci': item.record.user_input}] }}"
 
 - name: Generate playbooks to remediate vulnerabilities
   register: my_playbooks
@@ -78,8 +96,8 @@
   ansible.builtin.uri:
     url: https://cloud.redhat.com/api/remediations/v1/playbook
     method: POST
-    user: "{{ insights_username }}"
-    password: "{{ insights_password }}"
+    user: "{{ scm_username }}"
+    password: "{{ scm_password }}"
     validate_certs: false
     force_basic_auth: true
     status_code: 200
@@ -89,7 +107,7 @@
       accept: text/vnd.yaml
       Connection: keep-alive
     body_format: json
-    body: "{{ lookup('ansible.builtin.template','templates/playbook_generator_body.j2') }}"
+    body: "{{ lookup('ansible.builtin.template', 'templates/playbook_generator_body.j2') }}"
 
 # - name: print my_playbooks stadard out
 #   loop: "{{ my_playbooks['results'] }}"
@@ -114,23 +132,25 @@
   delegate_to: 127.0.0.1
   register: clone_result
   run_once: true
-  when: software_repository is defined
+  when: process_cves_software_repository is defined
   ansible.builtin.git:
-    repo: "{{ software_repository }}"
-    dest: "{{ local_repo }}"
+    repo: "{{ process_cves_software_repository }}"
+    dest: "{{ process_cves_local_repo }}"
     accept_hostkey: true
     force: true
+    version: main
 
 - name: Write the playbooks to the local_repo
   loop: "{{ my_playbooks['results'] }}"
   ansible.builtin.copy:
-    dest: "{{ local_repo }}/{{ item.item.number }}.yml"
+    dest: "{{ process_cves_local_repo }}/{{ item.item.number }}.yml"
     content: "{{ item.content }}"
+    mode: '0644'
 
 - name: Update playbooks to use the public facing dns name
   loop: "{{ my_playbooks['results'] }}"
   ansible.builtin.replace:
-    path: "{{ local_repo }}/{{ item.item.number }}.yml"
+    path: "{{ process_cves_local_repo }}/{{ item.item.number }}.yml"
     regexp: "{{ my_private_dns_name }}"
     replace: "{{ my_server }}"
 
@@ -139,7 +159,7 @@
   changed_when: false
   run_once: true
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ process_cves_local_repo }}"
   ansible.builtin.shell: git add *
 
 - name: Get the status of the repository
@@ -149,7 +169,7 @@
   delegate_to: localhost
   run_once: true
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ process_cves_local_repo }}"
   ansible.builtin.shell: git status
 
 - name: Commit the changes
@@ -157,43 +177,27 @@
   delegate_to: localhost
   run_once: true
   environment:
-    GIT_COMMITTER_NAME: "{{ git_name | default(omit) }}"
-    GIT_COMMITTER_EMAIL: "{{ git_email | default(omit) }}"
-    GIT_AUTHOR_NAME: "{{ git_name | default(omit) }}"
-    GIT_AUTHOR_EMAIL: "{{ git_email | default(omit) }}"
+    GIT_COMMITTER_NAME: "{{ process_cves_git_name | default(omit) }}"
+    GIT_COMMITTER_EMAIL: "{{ process_cves_git_email | default(omit) }}"
+    GIT_AUTHOR_NAME: "{{ process_cves_git_name | default(omit) }}"
+    GIT_AUTHOR_EMAIL: "{{ process_cves_git_email | default(omit) }}"
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ process_cves_local_repo }}"
   ansible.builtin.shell: git commit -am 'Changed'
 
 - name: Push the changes
   delegate_to: localhost
   run_once: true
-  when: software_repository is defined
+  when: process_cves_software_repository is defined
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ process_cves_local_repo }}"
   ansible.builtin.shell: git push
-
-- name: Get an AAP API Token and store it as new_token
-  register: new_token
-  ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/tokens/
-    method: POST
-    user: "{{ controller_username }}"
-    password: "{{ controller_password }}"
-    validate_certs: false
-    force_basic_auth: true
-    status_code: 201
-    return_content: true
-
-# - name: Print out the new token
-#   ansible.builtin.debug:
-#     msg: "{{ new_token.json.token }}"
 
 - name: Kick off a project sync
   ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/projects/{{ project_id }}/update/
+    url: "{{ controller_host }}/api/v2/projects/{{ project_id }}/update/"
     headers:
-      Authorization: Bearer {{ new_token.json.token }}
+      Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -205,7 +209,15 @@
   ansible.builtin.pause:
     seconds: 20
 
-- name: process my playbooks
+- name: Process my playbooks
   loop: "{{ chg_tkt_list }}"
   ansible.builtin.include_tasks:
     file: tasks/launch_playbooks.yml
+
+- name: Remove automated patching token
+  ansible.controller.token:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_oauthtoken: "{{ controller_token }}"
+    existing_token: "{{ controller_token }}"
+    validate_certs: false
+    state: absent

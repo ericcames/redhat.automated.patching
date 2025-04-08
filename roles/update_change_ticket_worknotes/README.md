@@ -12,7 +12,6 @@ Service Now Change ticket number
 Role Variables
 --------------
 ```yaml
-ticket_number: 123456
 ```
 Dependencies
 ------------
@@ -34,7 +33,7 @@ Example Playbook
 License
 -------
 
-https://spdx.org/licenses/GPL-3.0-only.html
+https://spdx.org/licenses/MIT.html
 
 Author Information
 ------------------

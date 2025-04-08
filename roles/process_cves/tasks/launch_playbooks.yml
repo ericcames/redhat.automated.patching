@@ -1,10 +1,10 @@
 ---
 - name: Update job template
   ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"
+    url: '{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
     method: PATCH
     headers:
-      Authorization: Bearer {{ new_token.json.token }}
+      Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -16,10 +16,10 @@
 - name: Run job template
   register: my_job_info
   ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/job_templates/{{ job_template_id }}/launch/
+    url: "{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/launch/"
     method: POST
     headers:
-      Authorization: Bearer {{ new_token.json.token }}
+      Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -36,10 +36,10 @@
 
 - name: Update job template back to default playbook
   ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"
+    url: '{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
     method: PATCH
     headers:
-      Authorization: Bearer {{ new_token.json.token }}
+      Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -55,10 +55,10 @@
   retries: 60
   delay: 10
   ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/jobs/{{ my_job_info.json.id }}
+    url: "{{ controller_host }}/api/v2/jobs/{{ my_job_info.json.id }}"
     method: GET
     headers:
-      Authorization: Bearer {{ new_token.json.token }}
+      Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -68,10 +68,10 @@
 - name: "Get job related events for job id: {{ my_job_info.json.id }}"
   register: job_related_events
   ansible.builtin.uri:
-    url: https://{{ controller_url }}/api/v2/jobs/{{ my_job_info.json.id }}/job_events/
+    url: "{{ controller_host }}/api/v2/jobs/{{ my_job_info.json.id }}/job_events/"
     method: GET
     headers:
-      Authorization: Bearer {{ new_token.json.token }}
+      Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all

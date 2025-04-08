@@ -12,11 +12,13 @@ Software repo with token
 Role Variables
 --------------
 ```yaml
-software_repository: https://{{personal_access_token}}@github.com/ericcames/RedHatInsightsPlaybooks.git
-local_repo: /var/tmp/github/RedHatInsightsPlaybooks
-git_name: ericcames
-git_email: ericcames@msn.com
-job_template_id: 165
+process_cves_software_repository: https://{{ process_cves_personal_access_token }}@github.com/ericcames/RedHatInsightsPlaybooks.git
+process_cves_personal_access_token: git_hub_token
+process_cves_local_repo: /var/tmp/github/RedHatInsightsPlaybooks
+process_cves_git_name: ericcames
+process_cves_git_email: ericcames@msn.com
+process_cves_job_template_id: 222
+process_cves_project_id: 221
 ```
 Dependencies
 ------------
@@ -37,7 +39,7 @@ Example Playbook
 License
 -------
 
-https://spdx.org/licenses/GPL-3.0-only.html
+https://spdx.org/licenses/MIT.html
 
 Author Information
 ------------------

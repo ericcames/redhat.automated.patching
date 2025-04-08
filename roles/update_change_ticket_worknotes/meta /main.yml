@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  role_name: update_change_ticket_worknotes
+  author: Eric Ames (ericcames)
+  description: Update the change ticket with the information about the work to be done.
+  license: MIT License
+  min_ansible_version: "2.12"
