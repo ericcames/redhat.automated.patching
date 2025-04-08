@@ -1,0 +1,15 @@
+---
+- name: Get my server name
+  hosts: rheldemo
+  connection: local
+
+  tasks:
+
+    - name: Print hostname
+      ansible.builtin.debug:
+        var: inventory_hostname
+
+    - name: Set hostname for next play
+      ansible.builtin.set_stats:
+        data:
+          server_name: "{{ inventory_hostname }}"
