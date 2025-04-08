@@ -16,9 +16,9 @@
     #       server_name: "{{ inventory_hostname }}"
 
     - name: Set hostname for next play
-      register: server_name
       ansible.builtin.set_fact:
         server_name: "{{ inventory_hostname }}"
+        cacheable: true
 
 - name: Kick off automated patching demo
   hosts: localhost
