@@ -1,13 +1,19 @@
 ---
+- name: Get my server name
+  hosts: rheldemo
+  connection: local
+
+  tasks:
+
+    - name: Print hostname
+      ansible.builtin.debug:
+        var: inventory_hostname
+
 - name: Kick off automated patching demo
   hosts: localhost
   connection: local
 
   tasks:
-
-    - name: Include the get_aws_instance_info role
-      ansible.builtin.include_role:
-        name: get_aws_instance_info
 
     - name: Include the get_insights_inventory_id role
       ansible.builtin.include_role:
