@@ -5,8 +5,8 @@
   run_once: true
   when: software_repository is defined
   ansible.builtin.git:
-    repo: "{{ software_repository }}"
-    dest: "{{ local_repo }}"
+    repo: "{{ cleanup_github_repo_software_repository }}"
+    dest: "{{ cleanup_github_repo_local_repo }}"
     accept_hostkey: true
     force: true
 
@@ -15,7 +15,7 @@
   changed_when: false
   run_once: true
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ cleanup_github_repo_local_repo }}"
   ansible.builtin.shell: git rm CTASK*.yml
 
 - name: Get the status of the repository
@@ -25,7 +25,7 @@
   delegate_to: localhost
   run_once: true
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ cleanup_github_repo_local_repo }}"
   ansible.builtin.shell: git status
 
 - name: Commit the changes
@@ -33,10 +33,10 @@
   delegate_to: localhost
   run_once: true
   environment:
-    GIT_COMMITTER_NAME: "{{ git_name | default(omit) }}"
-    GIT_COMMITTER_EMAIL: "{{ git_email | default(omit) }}"
-    GIT_AUTHOR_NAME: "{{ git_name | default(omit) }}"
-    GIT_AUTHOR_EMAIL: "{{ git_email | default(omit) }}"
+    GIT_COMMITTER_NAME: "{{ cleanup_github_repo_git_name | default(omit) }}"
+    GIT_COMMITTER_EMAIL: "{{ cleanup_github_repo_git_email | default(omit) }}"
+    GIT_AUTHOR_NAME: "{{ cleanup_github_repo_git_name | default(omit) }}"
+    GIT_AUTHOR_EMAIL: "{{ cleanup_github_repo_git_email | default(omit) }}"
   args:
     chdir: "{{ local_repo }}"
   ansible.builtin.shell: git commit -am 'Changed'
@@ -46,5 +46,5 @@
   run_once: true
   when: software_repository is defined
   args:
-    chdir: "{{ local_repo }}"
+    chdir: "{{ cleanup_github_repo_local_repo }}"
   ansible.builtin.shell: git push
