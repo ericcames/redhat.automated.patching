@@ -3,15 +3,15 @@
 - name: Determine that both AAP and Machine credentials are set
   ansible.builtin.assert:
     that:
-      - "lookup('ansible.builtin.env', 'CONTROLLER_USERNAME') !=''"
-      - "lookup('ansible.builtin.env', 'CONTROLLER_HOST') !=''"
-      - "lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') !=''"
+      - lookup('ansible.builtin.env', 'CONTROLLER_USERNAME') !=''
+      - lookup('ansible.builtin.env', 'CONTROLLER_HOST') !=''
+      - lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') !=''
     fail_msg:
-      - "Red Hat Ansible Automation Platform credential is not set"
-      - "Please assign correct credentials to the Job Template"
+      - Red Hat Ansible Automation Platform credential is not set
+      - Please assign correct credentials to the Job Template
 
 - name: Create a new token using username/password
-  ansible.controller.token:
+  awx.awx.token:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_username: "{{ lookup('ansible.builtin.env', 'CONTROLLER_USERNAME') }}"
     controller_password: "{{ lookup('ansible.builtin.env', 'CONTROLLER_PASSWORD') }}"
@@ -61,7 +61,9 @@
   loop: "{{ task_numbers_are_here['results'] }}"
   when: item.changed == true
   ansible.builtin.set_fact:
-    chg_tkt_list: "{{ chg_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'task_sys_id': item.record.sys_id, 'change_request_sys_id': item.record.change_request, 'cmdb_ci': item.record.cmdb_ci, 'insights_id': my_insights_inventory_id, 'cve_id': item.record.user_input}] }}"
+    chg_tkt_list: "{{ chg_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'task_sys_id': item.record.sys_id,
+      'change_request_sys_id': item.record.change_request, 'cmdb_ci': item.record.cmdb_ci, 'insights_id': my_insights_inventory_id, 'cve_id': item.record.user_input}]
+      }}"
 
 - name: Print out Change Task Tickets list
   ansible.builtin.debug:
@@ -84,7 +86,8 @@
   loop: "{{ problem_numbers_are_here['results'] }}"
   when: item.changed == true
   ansible.builtin.set_fact:
-    pbm_tkt_list: "{{ pbm_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'sys_id': item.record.sys_id, 'cmdb_ci': item.record.user_input}] }}"
+    pbm_tkt_list: "{{ pbm_tkt_list | default([]) + [{'number': item.record.number, 'short_description': item.record.short_description, 'sys_id': item.record.sys_id,
+      'cmdb_ci': item.record.user_input}] }}"
 
 - name: Generate playbooks to remediate vulnerabilities
   register: my_playbooks
@@ -145,7 +148,7 @@
   ansible.builtin.copy:
     dest: "{{ process_cves_local_repo }}/{{ item.item.number }}.yml"
     content: "{{ item.content }}"
-    mode: '0644'
+    mode: "0644"
 
 # - name: Update playbooks to use the public facing dns name
 #   loop: "{{ my_playbooks['results'] }}"
@@ -215,7 +218,7 @@
     file: tasks/launch_playbooks.yml
 
 - name: Remove automated patching token
-  ansible.controller.token:
+  awx.awx.token:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
     existing_token: "{{ controller_token }}"
