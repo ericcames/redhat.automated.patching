@@ -4,7 +4,6 @@
   connection: local
 
   tasks:
-
     - name: Print hostname
       ansible.builtin.debug:
         var: inventory_hostname
