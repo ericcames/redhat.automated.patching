@@ -1,0 +1,10 @@
+---
+- name: Process the CVEs
+  hosts: localhost
+  connection: local
+
+  tasks:
+
+    - name: Include the process_cves role
+      ansible.builtin.include_role:
+        name: process_cves

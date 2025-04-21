@@ -1,0 +1,9 @@
+- name: Update the change ticket
+  hosts: localhost
+  connection: local
+
+  tasks:
+
+    - name: Include the update_change_ticket_worknotes role
+      ansible.builtin.include_role:
+        name: update_change_ticket_worknotes
