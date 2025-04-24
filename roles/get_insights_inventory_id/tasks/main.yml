@@ -25,6 +25,11 @@
   ansible.builtin.debug:
     msg: "{{ my_host_list.json.results[0].id }}"
 
-- name: Capture Red Hat Insights inventory id
-  ansible.builtin.set_fact:
-    my_insights_inventory_id: "{{ my_host_list.json.results[0].id }}"
+# - name: Capture Red Hat Insights inventory id
+#   ansible.builtin.set_fact:
+#     my_insights_inventory_id: "{{ my_host_list.json.results[0].id }}"
+
+- name: Capture Red Hat Insights inventory id for  next job template
+  ansible.builtin.set_stats:
+    data:
+      my_insights_inventory_id: "{{ my_host_list.json.results[0].id }}"
