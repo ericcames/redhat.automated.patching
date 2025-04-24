@@ -1,6 +1,6 @@
 ---
 - name: Get my server name
-  hosts: ec2-3-101-38-231.us-west-1.compute.amazonaws.com
+  hosts: rheldemo
   connection: local
 
   tasks:
