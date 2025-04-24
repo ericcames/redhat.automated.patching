@@ -31,7 +31,7 @@
   retries: 40
   delay: 10
   ansible.builtin.uri:
-    url: https://console.redhat.com/api/vulnerability/v1/systems/{{ my_insights_inventory_id }}/cves?limit=30
+    url: https://console.redhat.com/api/vulnerability/v1/systems/{{ my_insights_inventory_id }}/cves?limit=5
     method: GET
     user: "{{ scm_username }}"
     password: "{{ scm_password }}"
