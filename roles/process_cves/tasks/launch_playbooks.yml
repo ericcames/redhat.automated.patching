@@ -45,7 +45,7 @@
   ansible.controller.job_wait:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    job_id: job.id
+    job_id: '{{ job.id }}'
     timeout: 120
 
 - name: Closing task
