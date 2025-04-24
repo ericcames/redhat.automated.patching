@@ -10,6 +10,10 @@
       - "Red Hat Ansible Automation Platform credential is not set"
       - "Please assign correct credentials to the Job Template"
 
+- name: Set a fact for controller_host
+  ansible.builtin.set_fact:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+
 - name: Create a new token using username/password
   ansible.controller.token:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
@@ -195,7 +199,7 @@
 
 - name: Kick off a project sync
   ansible.builtin.uri:
-    url: "{{ controller_host }}/api/v2/projects/{{ project_id }}/update/"
+    url: "{{ controller_host }}/api/v2/projects/{{ process_cves_project_id }}/update/"
     headers:
       Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
