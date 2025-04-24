@@ -41,7 +41,7 @@
 - name: Create a change task for each cve with a playbook
   register: task_numbers_are_here
   loop: "{{ my_cve_list['json']['data'] }}"
-  when: item.attributes.remediation == 2
+  when: item.attributes.remediation == 0
   servicenow.itsm.change_request_task:
     configuration_item: "{{ server_name }}"
     change_request_number: "{{ ticket_number }}"
@@ -70,7 +70,7 @@
 - name: Create problem for each cve without a playbook
   register: problem_numbers_are_here
   loop: "{{ my_cve_list['json']['data'] }}"
-  when: item.attributes.remediation != 2
+  when: item.attributes.remediation != 0
   servicenow.itsm.problem:
     state: new
     short_description: Red Hat Insights vulnerabilities:{{ item.attributes.synopsis }} there is no available Ansible Playbook :-0
