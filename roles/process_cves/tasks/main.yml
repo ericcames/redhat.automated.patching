@@ -197,26 +197,33 @@
     chdir: "{{ process_cves_local_repo }}"
   ansible.builtin.shell: git push
 
+# - name: Kick off a project sync
+#   ansible.builtin.uri:
+#     url: "{{ controller_host }}/api/controller/v2/projects/{{ process_cves_project_id }}/update/"
+#     headers:
+#       Authorization: Bearer "{{ controller_token['token'] }}"
+#       Content-Type: application/json
+#     validate_certs: false
+#     follow_redirects: all
+#     return_content: false
+#     method: POST
+#     status_code: 202
+
 - name: Kick off a project sync
-  ansible.builtin.uri:
-    url: "{{ controller_host }}/api/controller/v2/projects/{{ process_cves_project_id }}/update/"
-    headers:
-      Authorization: Bearer "{{ controller_token['token'] }}"
-      Content-Type: application/json
-    validate_certs: false
-    follow_redirects: all
-    return_content: false
-    method: POST
-    status_code: 202
+  ansible.controller.project_update:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_oauthtoken: "{{ controller_token }}"
+    project: RedHatInsightsPlaybooks
+
 
 - name: Pausing for 20 seconds to allow for the project sync up to finish
   ansible.builtin.pause:
     seconds: 20
 
-- name: Process my playbooks
-  loop: "{{ chg_tkt_list }}"
-  ansible.builtin.include_tasks:
-    file: tasks/launch_playbooks.yml
+# - name: Process my playbooks
+#   loop: "{{ chg_tkt_list }}"
+#   ansible.builtin.include_tasks:
+#     file: tasks/launch_playbooks.yml
 
 - name: Remove automated patching token
   ansible.controller.token:

@@ -4,3 +4,5 @@ collections:
     version: 7.2.0
   - name: servicenow.itsm
     version: 2.4.0
+  - name: ansible.controller
+    version: 4.6.11
