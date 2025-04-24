@@ -1,18 +1,4 @@
 ---
-# - name: Update job template
-#   ansible.builtin.uri:
-#     url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
-#     method: PATCH
-#     headers:
-#       Authorization: Bearer "{{ controller_token['token'] }}"
-#       Content-Type: application/json
-#     validate_certs: false
-#     follow_redirects: all
-#     return_content: false
-#     body_format: json
-#     body: "{{ lookup('ansible.builtin.template', 'templates/job_template_body.j2') }}"
-#     status_code: 200
-
 - name: Update job template
   ansible.controller.job_template:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
@@ -25,20 +11,6 @@
     playbook: "{{ item.number }}.yml"
     credentials:
       - AWS Machine Credential - Ames
-
-
-# - name: Run job template
-#   register: my_job_info
-#   ansible.builtin.uri:
-#     url: "{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/launch/"
-#     method: POST
-#     headers:
-#       Authorization: Bearer "{{ controller_token['token'] }}"
-#       Content-Type: application/json
-#     validate_certs: false
-#     follow_redirects: all
-#     return_content: false
-#     status_code: 201
 
 - name: Run job template
   register: job
@@ -54,20 +26,6 @@
     number: "{{ item.number }}"
     other:
       work_notes: "Launched AAP Job ID: {{ job.id }}"
-
-# - name: Update job template back to default playbook
-#   ansible.builtin.uri:
-#     url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
-#     method: PATCH
-#     headers:
-#       Authorization: Bearer "{{ controller_token['token'] }}"
-#       Content-Type: application/json
-#     validate_certs: false
-#     follow_redirects: all
-#     return_content: false
-#     body_format: json
-#     body: "{{ lookup('ansible.builtin.template', 'templates/job_template_body_default.j2') }}"
-#     status_code: 200
 
 - name: Update job template back to default playbook
   ansible.controller.job_template:
@@ -87,7 +45,7 @@
   ansible.controller.job_wait:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    job.id: "{{ job.id }}"
+    job_id: "{{ job.id }}"
     timeout: 120
 
 - name: Closing task
