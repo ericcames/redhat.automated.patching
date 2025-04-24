@@ -1,30 +1,51 @@
 ---
+# - name: Update job template
+#   ansible.builtin.uri:
+#     url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
+#     method: PATCH
+#     headers:
+#       Authorization: Bearer "{{ controller_token['token'] }}"
+#       Content-Type: application/json
+#     validate_certs: false
+#     follow_redirects: all
+#     return_content: false
+#     body_format: json
+#     body: "{{ lookup('ansible.builtin.template', 'templates/job_template_body.j2') }}"
+#     status_code: 200
+
 - name: Update job template
-  ansible.builtin.uri:
-    url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
-    method: PATCH
-    headers:
-      Authorization: Bearer "{{ controller_token['token'] }}"
-      Content-Type: application/json
-    validate_certs: false
-    follow_redirects: all
-    return_content: false
-    body_format: json
-    body: "{{ lookup('ansible.builtin.template', 'templates/job_template_body.j2') }}"
-    status_code: 200
+  ansible.controller.job_template:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_oauthtoken: "{{ controller_token }}"
+    name: 'Insights CVE R1000 "The Remediator"'
+    job_type: run
+    organization: AmesCO
+    inventory: "AAP Managed Inventory"
+    project: RedHatInsightsPlaybooks
+    playbook: "{{ item.number }}.yml"
+    credentials:
+      - AWS Machine Credential - Ames
+
+
+# - name: Run job template
+#   register: my_job_info
+#   ansible.builtin.uri:
+#     url: "{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/launch/"
+#     method: POST
+#     headers:
+#       Authorization: Bearer "{{ controller_token['token'] }}"
+#       Content-Type: application/json
+#     validate_certs: false
+#     follow_redirects: all
+#     return_content: false
+#     status_code: 201
 
 - name: Run job template
-  register: my_job_info
-  ansible.builtin.uri:
-    url: "{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/launch/"
-    method: POST
-    headers:
-      Authorization: Bearer "{{ controller_token['token'] }}"
-      Content-Type: application/json
-    validate_certs: false
-    follow_redirects: all
-    return_content: false
-    status_code: 201
+  register: job
+  ansible.controller.job_launch:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_oauthtoken: "{{ controller_token }}"
+    job_template: 'Insights CVE R1000 "The Remediator"'
 
 - name: Update the status for ticket
   servicenow.itsm.change_request_task:
@@ -32,62 +53,48 @@
     state: in_progress
     number: "{{ item.number }}"
     other:
-      work_notes: "Launched AAP Job ID: {{ my_job_info.json.id }}"
+      work_notes: "Launched AAP Job ID: {{ job.id }}"
+
+# - name: Update job template back to default playbook
+#   ansible.builtin.uri:
+#     url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
+#     method: PATCH
+#     headers:
+#       Authorization: Bearer "{{ controller_token['token'] }}"
+#       Content-Type: application/json
+#     validate_certs: false
+#     follow_redirects: all
+#     return_content: false
+#     body_format: json
+#     body: "{{ lookup('ansible.builtin.template', 'templates/job_template_body_default.j2') }}"
+#     status_code: 200
 
 - name: Update job template back to default playbook
-  ansible.builtin.uri:
-    url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
-    method: PATCH
-    headers:
-      Authorization: Bearer "{{ controller_token['token'] }}"
-      Content-Type: application/json
-    validate_certs: false
-    follow_redirects: all
-    return_content: false
-    body_format: json
-    body: "{{ lookup('ansible.builtin.template', 'templates/job_template_body_default.j2') }}"
-    status_code: 200
+  ansible.controller.job_template:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_oauthtoken: "{{ controller_token }}"
+    name: 'Insights CVE R1000 "The Remediator"'
+    job_type: run
+    organization: AmesCO
+    inventory: "AAP Managed Inventory"
+    project: RedHatInsightsPlaybooks
+    playbook: hello_world.yml
+    credentials:
+      - AWS Machine Credential - Ames
 
-- name: Checking the status of job before moving on to the next playbook"
-  register: my_job_status
-  until: "'successful' in my_job_status.json.status"
-  ignore_errors: true
-  retries: 60
-  delay: 10
-  ansible.builtin.uri:
-    url: "{{ controller_host }}/api/controller/v2/jobs/{{ my_job_info.json.id }}"
-    method: GET
-    headers:
-      Authorization: Bearer "{{ controller_token['token'] }}"
-      Content-Type: application/json
-    validate_certs: false
-    follow_redirects: all
-    return_content: false
-    status_code: 200
-
-- name: "Get job related events for job id: {{ my_job_info.json.id }}"
-  register: job_related_events
-  ansible.builtin.uri:
-    url: "{{ controller_host }}/api/controller/v2/jobs/{{ my_job_info.json.id }}/job_events/"
-    method: GET
-    headers:
-      Authorization: Bearer "{{ controller_token['token'] }}"
-      Content-Type: application/json
-    validate_certs: false
-    follow_redirects: all
-    return_content: false
-    status_code: 200
-
-# - name: print job_related_events
-#   loop: "{{ job_related_events['results'] }}"
-#   ansible.builtin.debug:
-#     msg: "{{item}}"
+- name: Wait for a job max 120 seconds
+  register: job_status
+  ansible.controller.job_wait:
+    controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
+    controller_oauthtoken: "{{ controller_token }}"
+    job.id: "{{ job.id }}"
+    timeout: 120
 
 - name: Closing task
   servicenow.itsm.change_request_task:
     state: closed
     number: "{{ item.number }}"
     close_code: successful
-    close_notes: "AAP Job ID: {{ my_job_info.json.id }} finished with a status of: {{ my_job_status.json.status }}"
+    close_notes: "AAP Job ID: {{ job.id }} finished with a status of: {{ job_status['status'] }}"
     other:
-      work_notes: "Completed AAP Job ID: {{ my_job_info.json.id }}"
+      work_notes: "Completed AAP Job ID: {{ job.id }}"

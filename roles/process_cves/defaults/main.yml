@@ -4,5 +4,3 @@ process_cves_personal_access_token: git_hub_token
 process_cves_local_repo: /var/tmp/github/RedHatInsightsPlaybooks
 process_cves_git_name: ericcames
 process_cves_git_email: ericcames@msn.com
-process_cves_job_template_id: 222
-process_cves_project_id: 221
