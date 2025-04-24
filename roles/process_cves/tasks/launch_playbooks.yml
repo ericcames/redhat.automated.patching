@@ -4,7 +4,7 @@
     url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
     method: PATCH
     headers:
-      Authorization: Bearer "{{ controller_token }}"
+      Authorization: Bearer "{{ controller_token['token'] }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -19,7 +19,7 @@
     url: "{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/launch/"
     method: POST
     headers:
-      Authorization: Bearer "{{ controller_token }}"
+      Authorization: Bearer "{{ controller_token['token'] }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -39,7 +39,7 @@
     url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
     method: PATCH
     headers:
-      Authorization: Bearer "{{ controller_token }}"
+      Authorization: Bearer "{{ controller_token['token'] }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -58,7 +58,7 @@
     url: "{{ controller_host }}/api/controller/v2/jobs/{{ my_job_info.json.id }}"
     method: GET
     headers:
-      Authorization: Bearer "{{ controller_token }}"
+      Authorization: Bearer "{{ controller_token['token'] }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
@@ -71,7 +71,7 @@
     url: "{{ controller_host }}/api/controller/v2/jobs/{{ my_job_info.json.id }}/job_events/"
     method: GET
     headers:
-      Authorization: Bearer "{{ controller_token }}"
+      Authorization: Bearer "{{ controller_token['token'] }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all

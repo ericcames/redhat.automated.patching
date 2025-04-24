@@ -201,7 +201,7 @@
   ansible.builtin.uri:
     url: "{{ controller_host }}/api/controller/v2/projects/{{ process_cves_project_id }}/update/"
     headers:
-      Authorization: Bearer "{{ controller_token }}"
+      Authorization: Bearer "{{ controller_token['token'] }}"
       Content-Type: application/json
     validate_certs: false
     follow_redirects: all
