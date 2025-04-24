@@ -1,7 +1,7 @@
 ---
 - name: Update job template
   ansible.builtin.uri:
-    url: '{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
+    url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
     method: PATCH
     headers:
       Authorization: Bearer "{{ controller_token }}"
@@ -16,7 +16,7 @@
 - name: Run job template
   register: my_job_info
   ansible.builtin.uri:
-    url: "{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/launch/"
+    url: "{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/launch/"
     method: POST
     headers:
       Authorization: Bearer "{{ controller_token }}"
@@ -36,7 +36,7 @@
 
 - name: Update job template back to default playbook
   ansible.builtin.uri:
-    url: '{{ controller_host }}/api/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
+    url: '{{ controller_host }}/api/controller/v2/job_templates/{{ job_template_id }}/?name=Insights%20CVE%20R1000%20"The%20Remediator"'
     method: PATCH
     headers:
       Authorization: Bearer "{{ controller_token }}"
@@ -55,7 +55,7 @@
   retries: 60
   delay: 10
   ansible.builtin.uri:
-    url: "{{ controller_host }}/api/v2/jobs/{{ my_job_info.json.id }}"
+    url: "{{ controller_host }}/api/controller/v2/jobs/{{ my_job_info.json.id }}"
     method: GET
     headers:
       Authorization: Bearer "{{ controller_token }}"
@@ -68,7 +68,7 @@
 - name: "Get job related events for job id: {{ my_job_info.json.id }}"
   register: job_related_events
   ansible.builtin.uri:
-    url: "{{ controller_host }}/api/v2/jobs/{{ my_job_info.json.id }}/job_events/"
+    url: "{{ controller_host }}/api/controller/v2/jobs/{{ my_job_info.json.id }}/job_events/"
     method: GET
     headers:
       Authorization: Bearer "{{ controller_token }}"

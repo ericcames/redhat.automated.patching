@@ -199,7 +199,7 @@
 
 - name: Kick off a project sync
   ansible.builtin.uri:
-    url: "{{ controller_host }}/api/v2/projects/{{ process_cves_project_id }}/update/"
+    url: "{{ controller_host }}/api/controller/v2/projects/{{ process_cves_project_id }}/update/"
     headers:
       Authorization: Bearer "{{ controller_token }}"
       Content-Type: application/json
