@@ -19,6 +19,10 @@
     controller_oauthtoken: "{{ controller_token }}"
     job_template: 'Insights CVE R1000 "The Remediator"'
 
+- name: Print job ID
+  ansible.builtin.debug:
+    var: job['id']
+
 - name: Update the status for ticket
   servicenow.itsm.change_request_task:
     on_hold: false
@@ -45,7 +49,7 @@
   ansible.controller.job_wait:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    job_id: '{{ job.id }}'
+    job_id: "{{ job['id'] }}"
     timeout: 120
 
 - name: Closing task
