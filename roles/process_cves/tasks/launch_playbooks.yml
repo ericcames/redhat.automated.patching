@@ -45,6 +45,7 @@
       - AWS Machine Credential - Ames
 
 - name: Wait for a job max 120 seconds
+  when: job['id'] is defined
   register: job_status
   ansible.controller.job_wait:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
