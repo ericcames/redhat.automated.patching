@@ -4,7 +4,6 @@
   connection: local
 
   tasks:
-
     - name: Include the get_insights_inventory_id role
       ansible.builtin.include_role:
         name: get_insights_inventory_id

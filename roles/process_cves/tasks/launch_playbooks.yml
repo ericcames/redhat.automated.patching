@@ -1,12 +1,12 @@
 ---
 - name: Update job template
-  ansible.controller.job_template:
+  awx.awx.job_template:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    name: 'Insights CVE R1000 "The Remediator"'
+    name: Insights CVE R1000 "The Remediator"
     job_type: run
     organization: AmesCO
-    inventory: "AAP Managed Inventory"
+    inventory: AAP Managed Inventory
     project: RedHatInsightsPlaybooks
     playbook: "{{ item.number }}.yml"
     credentials:
@@ -14,10 +14,10 @@
 
 - name: Run job template
   register: job
-  ansible.controller.job_launch:
+  awx.awx.job_launch:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    job_template: 'Insights CVE R1000 "The Remediator"'
+    job_template: Insights CVE R1000 "The Remediator"
 
 - name: Update the status for ticket
   servicenow.itsm.change_request_task:
@@ -28,13 +28,13 @@
       work_notes: "Launched AAP Job ID: {{ job.id }}"
 
 - name: Update job template back to default playbook
-  ansible.controller.job_template:
+  awx.awx.job_template:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    name: 'Insights CVE R1000 "The Remediator"'
+    name: Insights CVE R1000 "The Remediator"
     job_type: run
     organization: AmesCO
-    inventory: "AAP Managed Inventory"
+    inventory: AAP Managed Inventory
     project: RedHatInsightsPlaybooks
     playbook: hello_world.yml
     credentials:
@@ -42,10 +42,10 @@
 
 - name: Wait for a job max 120 seconds
   register: job_status
-  ansible.controller.job_wait:
+  awx.awx.job_wait:
     controller_host: "{{ lookup('ansible.builtin.env', 'CONTROLLER_HOST') }}"
     controller_oauthtoken: "{{ controller_token }}"
-    job_id: '{{ job.id }}'
+    job_id: "{{ job.id }}"
     timeout: 120
 
 - name: Closing task
