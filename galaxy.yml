@@ -2,12 +2,11 @@
 authors:
   - Eric Ames (ericcames)
 dependencies:
-  "amazon.aws": ">=7.2.0"
-  "servicenow.itsm": ">=2.4.0"
+  amazon.aws: ">=7.2.0"
+  servicenow.itsm: ">=2.4.0"
 license_file: LICENSE
 name: redhat_automated_patching
-description: Use Ansible, Insights and Servicenow to demo automated patching.
-             Help your control owners demostrate continuous compliance to your auditors.
+description: Use Ansible, Insights and Servicenow to demo automated patching. Help your control owners demostrate continuous compliance to your auditors.
 namespace: ericcames
 readme: README.md
 repository: https://github.com/ericcames/redhat.automated.patching
@@ -24,4 +23,4 @@ tags:
   - dailydemo
   - sales
   - insights
-version: 0.0.0
+version: "0.0.0"
